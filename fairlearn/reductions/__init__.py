@@ -11,6 +11,7 @@ learning training.
 from ._exponentiated_gradient import ExponentiatedGradient  # noqa: F401
 from ._grid_search import GridSearch  # noqa: F401
 from ._moments import BoundedGroupLoss  # noqa: F401
+from ._moments import NoisyBoundedGroupLoss  # noqa: F401
 from ._moments import EqualizedOdds  # noqa: F401
 from ._moments import ErrorRate  # noqa: F401
 from ._moments import TruePositiveRateParity  # noqa: F401
@@ -41,6 +42,7 @@ __all__ = [
     "ErrorRateParity",
     "ErrorRate",
     "BoundedGroupLoss",
+    "NoisyBoundedGroupLoss",
     "LossMoment",
     "SquareLoss",
     "ZeroOneLoss",

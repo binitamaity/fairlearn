@@ -10,6 +10,7 @@ import scipy.optimize as opt
 from sklearn import clone
 from sklearn.dummy import DummyClassifier
 
+
 from fairlearn.reductions._moments import ClassificationMoment
 
 from ._constants import _INDENTATION, _LINE, _PRECISION
@@ -135,6 +136,8 @@ class _Lagrangian:
             L = error + np.sum(lambda_projected * (gamma - self.constraints.bound()))
         else:
             L = error + np.sum(lambda_vec * (gamma - self.constraints.bound()))
+
+        print('lambda_vec : {}'.format(lambda_vec))
 
         max_constraint = (gamma - self.constraints.bound()).max()
         if max_constraint <= 0:

@@ -21,7 +21,8 @@ from ._constants import (
     _SHRINK_ETA,
     _SHRINK_REGRET,
 )
-from ._lagrangian import _Lagrangian
+# from ._lagrangian import _Lagrangian
+from ._noisy_lagrangian import _Lagrangian
 
 logger = logging.getLogger(__name__)
 
@@ -103,11 +104,11 @@ class ExponentiatedGradient(BaseEstimator, MetaEstimatorMixin):
         constraints,
         *,
         objective=None,
-        eps=0.01,
-        max_iter=50,
+        eps=0.00000001,
+        max_iter=500,
         nu=None,
         eta0=2.0,
-        run_linprog_step=True,
+        run_linprog_step=False,
         sample_weight_name="sample_weight",
     ):  # noqa: D103
         self.estimator = estimator
@@ -134,9 +135,11 @@ class ExponentiatedGradient(BaseEstimator, MetaEstimatorMixin):
         self.lambda_vecs_LP_ = pd.DataFrame()
         self.lambda_vecs_ = pd.DataFrame()
 
-        logger.debug("...Exponentiated Gradient STARTING")
 
+        logger.debug("...Exponentiated Gradient STARTING")
+        print('constraints:',self.constraints)
         B = 1 / self.eps
+        print('B:',B)
         lagrangian = _Lagrangian(
             X=X,
             y=y,
@@ -147,6 +150,7 @@ class ExponentiatedGradient(BaseEstimator, MetaEstimatorMixin):
             sample_weight_name=self.sample_weight_name,
             **kwargs,
         )
+
 
         theta = pd.Series(0, lagrangian.constraints.index)
         Qsum = pd.Series(dtype="float64")
@@ -169,12 +173,15 @@ class ExponentiatedGradient(BaseEstimator, MetaEstimatorMixin):
 
             if t == 0:
                 if self.nu is None:
-                    self.nu = (
-                        _ACCURACY_MUL
-                        * (h(X) - self.constraints._y_as_series).abs().std()
-                        / np.sqrt(self.constraints.total_samples)
-                    )
-                eta = self.eta0 / B
+                    # self.nu = (
+                    #     _ACCURACY_MUL
+                    #     * (h(X) - self.constraints._y_as_series).abs().std()
+                    #     / np.sqrt(self.constraints.total_samples)
+                    # )
+                    self.nu =1/B
+                print("NU:",self.nu)
+                # eta = self.eta0 / B
+                eta =self.nu/ B
                 logger.debug(
                     "...eps=%.3f, B=%.1f, nu=%.6f, max_iter=%d",
                     self.eps,
@@ -201,7 +208,7 @@ class ExponentiatedGradient(BaseEstimator, MetaEstimatorMixin):
                     self.nu
                 )
                 gap_LP = result_LP.gap()
-
+                print('gap_lp:',gap_LP)
             # keep values from exponentiated gradient or linear programming
             if gap_EG < gap_LP:
                 Qs.append(Q_EG)
@@ -228,6 +235,7 @@ class ExponentiatedGradient(BaseEstimator, MetaEstimatorMixin):
 
             if (gaps[t] < self.nu) and (t >= _MIN_ITER):
                 # solution found
+                print('gaps:',gaps[t])
                 break
 
             # update regret

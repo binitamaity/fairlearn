@@ -10,7 +10,7 @@ from fairlearn.utils._input_validation import (
 )
 
 from .error_rate import ErrorRate
-from .moment import (
+from moment import (
     _ALL,
     _EVENT,
     _GROUP_ID,

@@ -6,7 +6,7 @@ import pandas as pd
 
 from fairlearn.utils._input_validation import _validate_and_reformat_input
 
-from .moment import _ALL, _GROUP_ID, _LABEL, _LOSS, _PREDICTION, LossMoment
+from moment import _ALL, _GROUP_ID, _LABEL, _LOSS, _PREDICTION, LossMoment
 
 
 class ConditionalLossMoment(LossMoment):

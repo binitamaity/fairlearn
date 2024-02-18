@@ -100,7 +100,7 @@ def fetch_adult(*, cache=True, data_home=None, as_frame=True, return_X_y=False):
     """
     if not data_home:
         data_home = pathlib.Path().home() / _DOWNLOAD_DIRECTORY_NAME
-
+    
     return fetch_openml(
         data_id=1590,
         data_home=data_home,
